@@ -5,8 +5,11 @@ class Weather
     /** 
      * @var string
      * https://openweathermap.org/forecast5 
+     * 
+     * @note This API endpoind shows forecast only for next 5 days
+     * @todo UI datepicker should not allow more than range 5 days (fe. 26 - 31.7)
     */
-    private $API_URL_FORECAST = 'https://api.openweathermap.org/data/2.5/forecast?lat=%f&lon=%f&appid=%s';
+    private $API_URL_FORECAST = 'https://api.openweathermap.org/data/2.5/forecast?lat=%f&lon=%f&appid=%s&units=metric';
 
     /**
      * @var string
@@ -103,34 +106,6 @@ class Weather
     }
 
     /**
-     * Get geocoordinates for city
-     * 
-     * @throws UnexpectedValueException
-     * @return bool
-     */
-    public function getCityGeocoordinates(): bool
-    {
-        if( null == $this->city )
-        {
-            throw new UnexpectedValueException('No city has been specified');
-        }
-
-        $data = $this->call( self::TYPE_CITY );
-
-        // catch no data option
-        if( 0 == count( $data ) )
-        {
-            return false;
-        }
-
-        // set returned geocoordinates
-        // i am using first result because I assume that it is the most relevant result
-        $this->set( $data[0]['lat'], $data[0]['lon'] ); 
-        
-        return true;
-    }
-
-    /**
      * Validation of current GPS coordinates
      * 
      * @param bool $throwable - represents type of return on fail (true throws error directly)
@@ -181,6 +156,90 @@ class Weather
         return sprintf( $this->API_URL_CITY, $this->city , $this->API_KEY );
     }
 
+    /**
+     * Get geocoordinates for city
+     * 
+     * @throws UnexpectedValueException
+     * @return bool
+     * 
+     * @todo Make function private
+     */
+    public function getCityGeocoordinates(): bool
+    {
+        if( null == $this->city )
+        {
+            throw new UnexpectedValueException('No city has been specified');
+        }
+
+        $data = $this->call( self::TYPE_CITY );
+
+        // catch no data option
+        if( 0 == count( $data ) )
+        {
+            return false;
+        }
+
+        // set returned geocoordinates
+        // i am using first result because I assume that it is the most relevant result
+        $this->set( $data[0]->lat, $data[0]->lon ); 
+        
+        return true;
+    }
+
+    /**
+     * Get and format forecast data for given date and returns in required format for next steps
+     * If date is not specified, function uses today's date
+     * 
+     * @param string $date - in YYYY-mm-dd format, otherwise throws Exception
+     * 
+     * @throws Exception
+     * @return array
+     */
+    public function formatForecastData( string $date = null ): array{
+
+        // if no date is given, set today as date
+        if( null == $date )
+        {
+            $date = date('Y-m-d');
+        }
+
+        // getting interval points
+        $date_from = new DateTime( $date . ' 00:00:00');
+        $date_to = new DateTime( $date . ' 23:59:59');
+        
+        $result = [];
+
+        // get the data
+        $data = $this->call();
+
+        // collect the data in usable format
+        foreach( $data->list as $row )
+        {
+            $date = new DateTime('@' . $row->dt );
+            if( $date >= $date_from && $date <= $date_to )
+            {
+                $obj = new stdClass;
+                $obj->city = $this->city;
+                $obj->date = $date;
+                $obj->temp = $row->main->temp;
+                $obj->desc = '--';
+
+                if( true == isset( $row->weather[0]->description ) )
+                {
+                    $obj->desc = $row->weather[0]->description;
+                }
+                else if( true == isset( $row->weather->description ) )
+                {
+                    $obj->desc = $row->weather->description;    
+                }
+                
+                
+                $result[] = $obj;
+            }
+        }
+dd( $result );
+        return $result;
+    }
 
     /**
      * Calls cUrl API call for given type of call
