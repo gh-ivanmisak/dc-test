@@ -237,7 +237,7 @@ class Weather
                 $result[] = $obj;
             }
         }
-dd( $result );
+
         return $result;
     }
 
