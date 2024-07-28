@@ -37,6 +37,69 @@ class Weather
     const TYPE_FORECAST = 'forecast';
     const TYPE_CITY = 'city';
 
+    /**
+     * Main function for processing form
+     * 
+     * @return void
+     */
+    public function run()
+    {
+        if( false == isset( $_POST['city'] ) )
+        {
+            return;
+        }
+
+        // default response
+        $response = [
+            'code' => 500,
+            'msg' => 'There was an error while submiting form'
+        ];
+
+        // there all of the magic begins..
+        if( 0 < strlen( $_POST['city'] ) )
+        {
+            try
+            {
+                // setting up user inserted city into class
+                $this->setCity( $_POST['city'] );
+
+                // getting geocoordinates for inserted city
+                if( true == $this->getCityGeocoordinates() )
+                {
+                    // if was filled date too, we take this information
+                    // otherwise current date will be used
+                    $date = isset( $_POST['date'] ) ? $_POST['date'] : null;
+
+                    // obtaining data
+                    $data = $this->formatForecastData( $date );
+
+                    //@todo process data .. 
+                    // dd( $data );
+
+                }
+            }
+            // according all errors has their own message, we show it
+            // in real life is it better only show to user message, that something was wrong and log an error for me
+            catch( Exception $e )
+            {
+                $response['msg'] = $e->getMessage();
+            }
+            catch( UnexpectedValueException $e )
+            {
+                $response['msg'] = $e->getMessage();
+            }
+            
+        }
+        else
+        {
+            $response['msg'] = 'City name is required field';
+        }
+
+        // show response and end next processing of source
+        echo json_encode( $response );
+        exit();
+    }
+
     /** 
      * Setter for GPS coordinates = latitude and lognitude 
      * 
@@ -92,7 +155,7 @@ class Weather
      */
     public function setCity( string $city ): void
     {
-        $this->city = $city;
+        $this->city = trim( $city );
     }
 
     /**

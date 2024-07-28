@@ -1,14 +1,10 @@
 <?php 
 
 require_once __DIR__ . '/../src/app.php';
-/*
+
 $weather = new Weather();
-$weather->setCity('Bratislava');
-if( true == $weather->getCityGeocoordinates() )
-{
-    $weather->formatForecastData('2024-07-30');
-}
-*/
+$weather->run();
+
 ?><!DOCTYPE html>
 <html lang="en-US">
     <head>
@@ -24,18 +20,18 @@ if( true == $weather->getCityGeocoordinates() )
 
         <h1>≈Weather forecast</h1>
 
-        <form class="col-md-4">
+        <form id="forecast-form" action="/" class="col-md-4">
+
+            <div class="alert alert-danger d-none"></div>
 
             <div class="form-group">
-                <label for="city">City name</label>
-                <input type="text" class="form-control" id="city" name="city" aria-describedby="cityError">
-                <small id="cityError" class="form-text text-danger d-none"></small>
+                <label for="city">City name <span class="req">*</span></label>
+                <input type="text" class="form-control" id="city" name="city">
             </div>
 
             <div class="form-group">
                 <label for="date">Date</label>
-                <input type="text" class="form-control datepicker" id="date" name="date" aria-describedby="dateError">
-                <small id="dateError" class="form-text text-danger d-none"></small>
+                <input type="text" class="form-control datepicker" id="date" name="date">
             </div>
 
             <button type="submit" class="btn btn-primary mt-4">Submit</button>
