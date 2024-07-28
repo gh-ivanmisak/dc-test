@@ -1,5 +1,6 @@
 <div id="forecastTable" class="d-none">
     <hr />
+    <h2></h2>
 
     <table class="table table-bordered">
         <thead>

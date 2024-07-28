@@ -94,6 +94,8 @@ class Weather
                         // updating ajax response with obtained data
                         $response['code'] = 200;
                         $response['html'] = $html;
+                        $response['title'] = 'Weather in ' . $this->getCity() . ' for the date ' . $data[0]->date->format('d.m.Y');
+                        $response['city'] = $this->getCity();
                         unset( $response['msg'] );
                     }
                     // else: data variable is empty
@@ -440,7 +442,7 @@ class Weather
                 $rowNo = 1;
                 $activeWorksheet->setCellValue('A'.$rowNo, 'City name');
                 $activeWorksheet->setCellValue('B'.$rowNo, 'Date');
-                $activeWorksheet->setCellValue('C'.$rowNo, 'Temperature');
+                $activeWorksheet->setCellValue('C'.$rowNo, 'Temperature [°C]');
                 $activeWorksheet->setCellValue('D'.$rowNo, 'Description');
 
                 // content
@@ -450,7 +452,7 @@ class Weather
 
                     $activeWorksheet->setCellValue('A'.$rowNo, isset($row->city) ? $row->city : '--' );
                     $activeWorksheet->setCellValue('B'.$rowNo, isset($row->date) ? $row->date->format('d.m.Y H:i') : '--' );
-                    $activeWorksheet->setCellValue('C'.$rowNo, isset($row->temp) ? ( number_format($row->temp,1,',') . '°' ) : '--' );
+                    $activeWorksheet->setCellValue('C'.$rowNo, isset($row->temp) ? number_format($row->temp,1,',') : '--' );
                     $activeWorksheet->setCellValue('D'.$rowNo, isset($row->desc) ? $row->desc : '--' );    
                 }
 

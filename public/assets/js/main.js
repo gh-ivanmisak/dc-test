@@ -46,6 +46,12 @@ var _processTable = {
         this.parent.removeClass('d-none');
     },
 
+    // show table title 
+    setTitle: function( text )
+    {
+        $('h2',this.parent).text( text );   
+    },
+    
     // clear and hide response table
     clear: function(){
 
@@ -84,6 +90,9 @@ var _processForm = function( form ){
                 res = JSON.parse( res );
             }
             catch (e) {
+                // hide spinner icon
+                $('#spinner').hide();
+
                 _msg.error( _errorMsgGlobal );
                 return;
             };
@@ -95,8 +104,12 @@ var _processForm = function( form ){
                 _processTable.setFormData( formData );
 
                 // setting response data
+                if( 'undefined' != res.title )
+                {
+                    _processTable.setTitle( res.title );
+                }
                 _processTable.setMainData( res.html );
-
+                
                 // show generated table
                 _processTable.show();
 
