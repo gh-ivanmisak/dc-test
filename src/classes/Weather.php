@@ -247,7 +247,7 @@ class Weather
      */
     private function buildUrl_City(): string
     {
-        return sprintf( $this->API_URL_CITY, $this->city , $this->API_KEY );
+        return sprintf( $this->API_URL_CITY, urlencode( $this->city ) , $this->API_KEY );
     }
 
     /**
@@ -387,7 +387,7 @@ class Weather
         $response = json_decode( $response );
 
         // processing api errors
-        if( 'array' != gettype($response) )
+        if( null !== $response &&'array' != gettype($response) )
         {
             if( 200 != (int) $response->cod )
             {
