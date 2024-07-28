@@ -1,6 +1,28 @@
 // global form error message text
 var _errorMsgGlobal = 'There was an error while submiting form';
+var _sucessMsgGlobal = 'Obtaining weather data is finished';
 
+// messages
+var _msg = {
+
+    el: $('.alert'),
+    error: function( text )
+    {
+        this.clear();
+        this.el.addClass('alert-danger').removeClass('d-none').text( text );     
+    },
+    success: function( text )
+    {
+        this.clear();
+        this.el.addClass('alert-success').removeClass('d-none').text( text );
+    },
+    clear: function()
+    {
+        this.el.removeClass('alert-danger').removeClass('alert-success').addClass('d-none').text('');
+    }
+}
+
+// processing reslt table
 var _processTable = {
 
     // main parent of the response table
@@ -36,7 +58,7 @@ var _processTable = {
 var _processForm = function( form ){
 
     // hide previous error if exists
-    $('.alert',form).addClass('d-none');
+    _msg.clear();
 
     // hide response table 
     _processTable.clear();
@@ -62,7 +84,7 @@ var _processForm = function( form ){
                 res = JSON.parse( res );
             }
             catch (e) {
-                $('.alert',form).removeClass('d-none').text( _errorMsgGlobal );
+                _msg.error( _errorMsgGlobal );
                 return;
             };
 
@@ -77,11 +99,15 @@ var _processForm = function( form ){
 
                 // show generated table
                 _processTable.show();
+
+                // show succesfull message
+                _msg.success( _sucessMsgGlobal );
             }
             // show error to user 
             else
             {
-                $('.alert',form).removeClass('d-none').text( res.msg );
+                // show error message
+                _msg.error( res.msg );
             }
 
             // hide spinner icon
@@ -89,7 +115,8 @@ var _processForm = function( form ){
         },
         error: function()
         {
-            $('.alert',form).removeClass('d-none').text( _errorMsgGlobal );
+            // show error message
+            _msg.error( _errorMsgGlobal );
 
             // hide spinner icon
             $('#spinner').hide();
