@@ -1,6 +1,9 @@
 <div id="forecastTable" class="d-none">
     <hr />
+    
+    <!-- title and subtitle -->
     <h2></h2>
+    <p></p>
 
     <table class="table table-bordered">
         <thead>

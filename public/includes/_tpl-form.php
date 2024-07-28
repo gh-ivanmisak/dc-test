@@ -4,7 +4,7 @@
 
     <div class="form-group">
         <label for="city">City name <span class="req">*</span></label>
-        <input type="text" class="form-control" id="city" name="city" value="<?= isset( $_GET['city'] ) ? $_GET['city'] : null ?>">
+        <input type="text" class="form-control" id="city" name="city" value="<?= isset( $_GET['city'] ) ? $_GET['city'] : null ?>" required="required">
     </div>
 
     <div class="form-group">

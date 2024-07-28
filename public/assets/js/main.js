@@ -51,6 +51,11 @@ var _processTable = {
     {
         $('h2',this.parent).text( text );   
     },
+
+    setSubTitle: function( text )
+    {
+        $('h2',this.parent).next().text( text );   
+    },
     
     // clear and hide response table
     clear: function(){
@@ -74,6 +79,13 @@ var _processForm = function( form ){
         city: $('#city', form).val(),
         date: $('#date', form).val()
     };
+
+    // weather API needs min. 3 characters
+    if( 3 > formData.city.length )
+    {
+        _msg.error( 'City name must be min. 3 characters long' );
+        return;    
+    }
 
     // show spinner icon
     $('#spinner').css({display:'flex'});
@@ -104,9 +116,10 @@ var _processForm = function( form ){
                 _processTable.setFormData( formData );
 
                 // setting response data
-                if( 'undefined' != res.title )
+                if( 'undefined' != res.title && 'undefined' != res.subtitle )
                 {
                     _processTable.setTitle( res.title );
+                    _processTable.setSubTitle( res.subtitle );
                 }
                 _processTable.setMainData( res.html );
                 

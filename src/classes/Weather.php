@@ -95,6 +95,7 @@ class Weather
                         $response['code'] = 200;
                         $response['html'] = $html;
                         $response['title'] = 'Weather in ' . $this->getCity() . ' for the date ' . $data[0]->date->format('d.m.Y');
+                        $response['subtitle'] = '(' . $this->getLat() . ', ' . $this->getLon() . ')';
                         $response['city'] = $this->getCity();
                         unset( $response['msg'] );
                     }
@@ -174,9 +175,9 @@ class Weather
      * 
      * @return float
      */
-    public function getLog(): float
+    public function getLon(): float
     {
-        return $this->log;
+        return $this->lon;
     }
 
     /**
