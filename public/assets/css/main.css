@@ -6,3 +6,25 @@ label
 .req{
     color: #f00;
 }
+
+#spinner{
+    position: fixed;
+    z-index: 1;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
+    background: rgba(0,0,0,0.2);
+    display: none;
+    justify-content: center;
+}
+#spinner svg{
+    display: block;
+    width: 30px;
+    animation:spin 4s linear infinite;
+}
+@keyframes spin { 
+    100% { 
+        transform:rotate(360deg); 
+    } 
+}

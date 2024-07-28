@@ -47,6 +47,9 @@ var _processForm = function( form ){
         date: $('#date', form).val()
     };
 
+    // show spinner icon
+    $('#spinner').css({display:'flex'});
+
     // ajax call
     $.ajax({
         url: form.attr('action'),
@@ -80,10 +83,16 @@ var _processForm = function( form ){
             {
                 $('.alert',form).removeClass('d-none').text( res.msg );
             }
+
+            // hide spinner icon
+            $('#spinner').hide();
         },
         error: function()
         {
             $('.alert',form).removeClass('d-none').text( _errorMsgGlobal );
+
+            // hide spinner icon
+            $('#spinner').hide();
         }
     });
 

@@ -8,8 +8,8 @@ class Weather
      * @var string
      * https://openweathermap.org/forecast5 
      * 
-     * @note This API endpoind shows forecast only for next 5 days
-     * @todo UI datepicker should not allow more than range 5 days (fe. 26 - 31.7)
+     * @note    This API endpoind shows forecast only for next 5 days
+     *          UI datepicker should not allow more than range 5 days (fe. 26 - 31.7)
     */
     private $API_URL_FORECAST = 'https://api.openweathermap.org/data/2.5/forecast?lat=%f&lon=%f&appid=%s&units=metric';
 
@@ -255,10 +255,8 @@ class Weather
      * 
      * @throws UnexpectedValueException
      * @return bool
-     * 
-     * @todo Make function private
      */
-    public function getCityGeocoordinates(): bool
+    private function getCityGeocoordinates(): bool
     {
         if( null == $this->city )
         {
