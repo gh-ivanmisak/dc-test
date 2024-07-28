@@ -460,6 +460,9 @@ class Weather
                 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
                 header('Content-Disposition: attachment; filename="forecast_' . time() . '.xlsx"');
                 $writer->save('php://output');
+
+                // because of Microsoft ;-) 
+                exit();
             }
         }
 
