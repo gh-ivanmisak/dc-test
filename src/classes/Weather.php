@@ -73,22 +73,47 @@ class Weather
                     // obtaining data
                     $data = $this->formatForecastData( $date );
 
-                    //@todo process data .. 
-                    // dd( $data );
+                    if( count($data) )
+                    {
+                        // generating html response
+                        $html = '';
+                        foreach( $data as $row )
+                        {
+                            ob_start();
+                            include _WWW_DIR_ . '/includes/_tpl-row.php';
+                            $html .= ob_get_contents();
+                            ob_end_clean();
+                        }
 
+                        // updating ajax response with obtained data
+                        $response['code'] = 200;
+                        $response['html'] = $html;
+                        unset( $response['msg'] );
+                    }
+                    // else: data variable is empty
+                    else
+                    {
+                        $response['msg'] = 'No data has been found';
+                    }
                 }
+                // else: there was problem getting geocoordinates
+                else
+                {
+                    $response['msg'] = 'There was problem while getting geocoordinates';
+                }
+
             }
             // according all errors has their own message, we show it
             // in real life is it better only show to user message, that something was wrong and log an error for me
             catch( Exception $e )
             {
+
                 $response['msg'] = $e->getMessage();
             }
             catch( UnexpectedValueException $e )
             {
                 $response['msg'] = $e->getMessage();
             }
-            
         }
         else
         {
