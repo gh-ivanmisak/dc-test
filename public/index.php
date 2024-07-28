@@ -20,25 +20,11 @@ $weather->run();
 
         <h1>≈Weather forecast</h1>
 
-        <form id="forecast-form" action="/" class="col-md-4">
+        <!-- form template -->
+        <?php include __DIR__ . '/includes/_tpl-form.php'; ?>
 
-            <div class="alert alert-danger d-none"></div>
-
-            <div class="form-group">
-                <label for="city">City name <span class="req">*</span></label>
-                <input type="text" class="form-control" id="city" name="city">
-            </div>
-
-            <div class="form-group">
-                <label for="date">Date</label>
-                <input type="text" class="form-control datepicker" id="date" name="date">
-            </div>
-
-            <button type="submit" class="btn btn-primary mt-4">Submit</button>
-
-        </form>
-
-        <?php include __DIR__ . '/includes/table.php'; ?>
+        <!-- results container template -->
+        <?php include __DIR__ . '/includes/_tpl-table.php'; ?>
 
         <!-- scripts -->
         <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
