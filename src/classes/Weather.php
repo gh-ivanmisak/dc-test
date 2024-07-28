@@ -1,5 +1,7 @@
 <?php
 
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class Weather
 {
     /** 
@@ -42,8 +44,12 @@ class Weather
      * 
      * @return void
      */
-    public function run()
+    public function run(): void
     {
+        /* ------- PROCESSING EXPORT CALL ------- */
+        $this->export();
+
+        /* ------- PROCESSING AJAX CALL ------- */
         if( false == isset( $_POST['city'] ) )
         {
             return;
@@ -400,6 +406,65 @@ class Weather
         curl_close($ch);
 
         return $response;
+    }
+
+    /**
+     * Handle function for export get and download data
+     * 
+     * @return void
+     */
+    public function export(): void
+    {
+        if( true == isset($_GET['download']) && true == isset($_GET['city']) )
+        {
+            $date = true == $_GET['date'] ? $_GET['date'] : null;
+
+            $this->download( $_GET['city'], $date );
+        }
+    }
+
+    public function download( string $city, string $date = null ): void
+    {
+        $this->setCity( $city );
+
+        // getting geocoordinates for inserted city
+        if( true == $this->getCityGeocoordinates() )
+        {
+            // obtaining data
+            $data = $this->formatForecastData( $date );
+
+            if( count($data) )
+            {
+                $spreadsheet = new Spreadsheet();
+                $activeWorksheet = $spreadsheet->getActiveSheet();
+
+                // header
+                $rowNo = 1;
+                $activeWorksheet->setCellValue('A'.$rowNo, 'City name');
+                $activeWorksheet->setCellValue('B'.$rowNo, 'Date');
+                $activeWorksheet->setCellValue('C'.$rowNo, 'Temperature');
+                $activeWorksheet->setCellValue('D'.$rowNo, 'Description');
+
+                // content
+                foreach( $data as $row )
+                {
+                    $rowNo++;
+
+                    $activeWorksheet->setCellValue('A'.$rowNo, isset($row->city) ? $row->city : '--' );
+                    $activeWorksheet->setCellValue('B'.$rowNo, isset($row->date) ? $row->date->format('d.m.Y H:i') : '--' );
+                    $activeWorksheet->setCellValue('C'.$rowNo, isset($row->temp) ? ( number_format($row->temp,1,',') . '°' ) : '--' );
+                    $activeWorksheet->setCellValue('D'.$rowNo, isset($row->desc) ? $row->desc : '--' );    
+                }
+
+                // generating file and pushing to output
+                $writer = new Xlsx($spreadsheet);
+                
+                header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+                header('Content-Disposition: attachment; filename="forecast_' . time() . '.xlsx"');
+                $writer->save('php://output');
+            }
+        }
+
     }
 
 }

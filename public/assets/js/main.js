@@ -104,4 +104,27 @@ $(function(){
         _processForm( $(e.currentTarget) );
     });
 
+    // export & download btn
+    $(document).on('click','#btn-export',function(e){
+
+        e.preventDefault();
+        var _t = $(e.currentTarget);
+
+        // generating url address from obtained data
+        var url = _t.attr('href');
+        
+        if( 'undefined' != typeof( _t.attr('data-city') ) && 'undefined' != typeof( _t.attr('data-date') ) )
+        {
+            url += '&city=' + _t.attr('data-city');
+            url += '&date=' + _t.attr('data-date');
+
+            window.location.href = url;
+        }
+        else
+        {
+            // fallback
+            alert('Fill the form first');
+        }
+    })
+
 });
